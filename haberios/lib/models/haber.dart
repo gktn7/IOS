@@ -15,11 +15,10 @@ class Haber {
 
   factory Haber.fromJson(Map<String, dynamic> json) {
     return Haber(
-      
       title: json['title'] ?? '',
       description: json['description'],
       content: json['content'],
-      imageUrl: json['urlToImage'],
+      imageUrl: json['urlToImage'] ?? json['imageUrl'],
       url: json['url'],
     );
   }
