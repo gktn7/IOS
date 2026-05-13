@@ -1,0 +1,45 @@
+name: pipeline2
+
+on:
+  push:
+    branches:
+      - main
+      - 'services/**'
+
+jobs:
+  build-auth-service:
+    uses: ./.github/workflows/reusable-docker-build.yml
+    with:
+      service_name: auth-service
+      dockerfile_path: ./services/auth/Dockerfile
+      context_path: ./services/auth
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  
+  build-payment-service:
+    uses: ./.github/workflows/reusable-docker-build.yml
+    with:
+      service_name: auth-service
+      dockerfile_path: ./services/payment/Dockerfile
+      context_path: ./services/payment
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  
+  build-notification-service:
+    uses: ./.github/workflows/reusable-docker-build.yml
+    with:
+      service_name: auth-service
+      dockerfile_path: ./services/notification/Dockerfile
+      context_path: ./services/notfication
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+  notification-job:
+    runs-on: ubuntu-latest
+    needs: [build-auth-service, build-notification-service, build-payment-service]
+    if: always()
+    steps:
+      - run: echo "🚀 All services deployed"
